@@ -7,6 +7,7 @@ This is a simple list of requirements for an automated workflow.
 3. Integrate openlava/a n other job submission
 4. Integrate complex workflow graphs (conflicts 1.)
 5. Integrate Slack, Gitter, or other chosen notification channel.
+6. GUI?
 
 ## Scope
 
