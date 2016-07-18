@@ -5,14 +5,12 @@
  * Files
  */
 
-params.reads = "$baseDir/../KiwiTestData/*R{1,2}.fq.gz"
-params.genome = "/output/genomic/plant/Actinidia/chinensis/CK51F3_01/Genome/Assembly/PseudoSanger/PS1/Pseudochromosomes/Version1/PS1.1.68/PS1.1.68.5/AllChromosomes/PS1_1.68.5.fasta"
-
 /*
  * The reference genome file
  */
 
-genome_file = file(params.genome)
+genome = Channel.fromPath(params.genome)
+
 
 /*
  * Creates the `read_pairs` channel that emits for each read-pair a tuple containing
@@ -24,24 +22,42 @@ Channel
     .set { read_pairs }
 
 
+process testData{
+    tag 'test'
+    executor 'lsf'
+    
+    input:
+    set pair_id, file(reads) from read_pairs
+
+    script:
+    template 'test_data.sh'
+}
+
+
 process buildGenomeIndex{
     tag 'build'
     executor 'lsf'
     module 'bowtie/1.0.0'
-    /*publishDir '/output/something'*/
+    publishDir 'output'
     cpus 1
     disk '10 GB'
     memory '1000 GB'
     time '10h'
 
     input:
-    file genome_file
+    file species from genome
 
     output:
-    file "genome.index*" into genome_index
+    file "${dbName}*" into genome_index
+
+    script:
+    dbName = species.baseName
 
     """
-    bowtie-build ${genome_file} genome.index
+    bowtie-build ${species} genome_index
     """
 }
+
+
+
 
