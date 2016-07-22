@@ -8,12 +8,12 @@
 Channel
     .fromPath( params.global_reads )                                             
     .ifEmpty { error "Cannot find any reads matching: ${params.global_reads}" }  
-    .set { reads }
+    .set { fastqc_reads }
 
 Channel
     .fromPath( params.global_reads )
     .ifEmpty { error "Cannot find any reads matching: ${params.global_reads}" }
-    .set { reads2 }
+    .set { fastq_screen_reads }
 
 fastqc_outdir = file(params.fastqc_outdir)
 
@@ -29,13 +29,13 @@ process fastqc{
     //time '10h'
 
     input:
-    set file(r) from reads
+    set file(reads) from fastqc_reads
 
     script:
         if( params.fastqc == true )
             """
             mkdir -p ${fastqc_outdir}
-            fastqc -o ${fastqc_outdir}  ${r} 
+            fastqc -o ${fastqc_outdir}  ${reads} 
             """
         else
             println "Fastqc omitted: params.fastqc!=true"
@@ -44,16 +44,18 @@ process fastqc{
 process fastq_screen{
     tag 'fastq_screen'
     //executor lsf
-    module 'fastq_screen/v0.5.2'
+    module 'fastq_screen/v0.5.2:bowtie2/2.2.5'
+    //module 'bowtie2'
     
     input:
-    set file(r) from reads2
+    set file(reads) from fastq_screen_reads
     //file cont_db
 
     script:
         if( params.fastq_screen == true)
             """
-                fastq_screen --help
+                mkdir -p ${params.fastq_screen_outdir}
+                fastq_screen --aligner=bowtie2 --conf=${params.fastq_screen_conf} --outdir=${params.fastq_screen_outdir} ${reads} 
             """
         else
             error "Fastqc_screen omitted: params.fastq_screen!=true"
