@@ -58,6 +58,9 @@ annotation_file = file(params.annot)
  * the pair ID, the first read-pair file and the second read-pair file 
  */
 
+
+/* Fonction PairChannel provides a channel with the tuples above and allows the use of the same channel twice */
+
 def PairChannel(parameterR){
 Channel
     .fromFilePairs( parameterR )
@@ -66,7 +69,7 @@ Channel
  
 
 
-/* Test command Fastqc */
+/* Test command Fastqc: take Fastq file input and return Quality Control Report (html,zip) */
 
 process qualitycontrol {
         module "FastQC"
