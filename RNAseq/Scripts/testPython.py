@@ -26,7 +26,6 @@ for file in glob.glob("*_HTseq.C.counts"):  #For file of counts data in the actu
 			genes[gene].append(counts) #If the gene already exist in the dictionnary, just complete the list of counts
 counts_f.close()
 
-print ColumnHeader
 
 outfile.write('Gene\t'+'\t'.join(ColumnHeader)+'\n') #Write the first lines, with headers and names of columns
 
@@ -37,7 +36,6 @@ for gene in genes:   #Run through the genes dictionnary and for each gene
 
 outfile.close()
 
-print "Merged table is 'merged_counts.txt'"
 		
 		
 		

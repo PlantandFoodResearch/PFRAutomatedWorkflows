@@ -46,7 +46,7 @@ head(res)
 # Here it's show if there are differentially expressed genes
 #By default, the last variable in the design formula is chosen, and points will be colored red if the adjusted p-value is less than 0.1. Points which fall out of the window are plotted as open triangles
 
-plotMA(dds,ylim=c(-2,2),main='DESeq2')
+plotMA(dds,ylim=c(-10,10),main='DESeq2')
 dev.copy(png,'deseq2_MAplot.png')
 dev.off()
 
