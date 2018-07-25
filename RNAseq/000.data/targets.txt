@@ -1,0 +1,32 @@
+##	filename=targets.txt
+##	project-code=
+##	experiment-requestor=10500
+##	project-leader=Margaret Carpenter
+##	lead-researcher=Margaret Carpenter
+##	funding-source=
+##	data-steward=Susan Thomson
+##	species=Solanum tuberosum
+##	tissue=tuber
+##	sample-type=RNA
+##	data-type=100 base pair, paired-end
+##	library-type=Stranded mRNA
+##	experimental-design=https://github.com/PlantandFoodResearch/PFRAutomatedWorkflows/blob/master/RNAseq/2018-06-19-Potato_RNAseq_test_data.ipynb
+## COLUMN=<ID=id,Type=string,Description="Sample ID">
+## COLUMN=<ID=size,Type=string,Description="File size">
+## COLUMN=<ID=date,Type=date,Description="Date of file creation">
+## COLUMN=<ID=file,Type=string,Description="File name">
+## COLUMN=<ID=group,Type=string,Description="Condition">
+## COLUMN=<ID=rep,Type=string,Description="Forward/reverse">
+id  size	date	file	group	rep
+8HPT    1.3G	May 18 2016	8HPT_C9HBWANXX_GATCAG_L002_R1.fastq.gz	hot psyllid	rep1
+8HPT    1.3G	May 18 2016	8HPT_C9HBWANXX_GATCAG_L002_R2.fastq.gz	hot psyllid	rep1
+6HPT    1.2G	May 18 2016	6HPT_C9HBWANXX_GATCAG_L006_R1.fastq.gz	hot psyllid	rep2
+6HPT    1.2G	May 18 2016	6HPT_C9HBWANXX_GATCAG_L006_R2.fastq.gz	hot psyllid	rep2
+11HPT   1.1G	May 18 2016	11HPT_C9HBWANXX_GGCTAC_L004_R1.fastq.gz	hot psyllid	rep3
+11HPT   1.1G	May 18 2016	11HPT_C9HBWANXX_GGCTAC_L004_R2.fastq.gz	hot psyllid	rep3
+2CT 1012M	May 18 2016	2CT_C9HBWANXX_TTAGGC_L004_R1.fastq.gz	control	rep1
+2CT 1012M	May 18 2016	2CT_C9HBWANXX_TTAGGC_L004_R2.fastq.gz	control	rep1
+4CT 1.1G	May 18 2016	4CT_C9HBWANXX_ACAGTG_L002_R1.fastq.gz	control	rep2
+4CT 1.1G	May 18 2016	4CT_C9HBWANXX_ACAGTG_L002_R2.fastq.gz	control	rep2
+12CT    706M	May 18 2016	12CT_C9HBWANXX_CTTGTA_L006_R1.fastq.gz	control	rep3
+12CT    726M	May 18 2016	12CT_C9HBWANXX_CTTGTA_L006_R2.fastq.gz	control	rep3
