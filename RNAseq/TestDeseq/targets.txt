@@ -1,0 +1,8 @@
+
+id	size	date	file	group	rep
+10Crop52HP0	1.3G	May 18 2016	8HPT_C9HBWANXX_GATCAG_L002_R1.fastq.gz	hot psyllid 0day	rep1
+29Crop52HP0	1.2G	May 18 2016	6HPT_C9HBWANXX_GATCAG_L006_R1.fastq.gz	hot psyllid 0day	rep2
+56Crop52HP0	1.1G	May 18 2016	11HPT_C9HBWANXX_GGCTAC_L004_R1.fastq.gz	hot psyllid 0day	rep3
+18Crop52HP7	1012M	May 18 2016	2CT_C9HBWANXX_TTAGGC_L004_R1.fastq.gz	hot psyllid 7day	rep1
+25Crop52HP7	1.1G	May 18 2016	4CT_C9HBWANXX_ACAGTG_L002_R1.fastq.gz	hot psyllid 7day	rep2
+50Crop52HP7	706M	May 18 2016	12CT_C9HBWANXX_CTTGTA_L006_R1.fastq.gz	hot psyllid 7day	rep3
