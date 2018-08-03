@@ -1,0 +1,8 @@
+
+id	file	group	rep
+8HPT	8HPT_sub_HTseq.counts	hot psyllid	rep1
+6HPT	6HPT_sub_HTseq.counts	hot psyllid	rep2
+11HPT	11HPT_sub_HTseq.counts	hot psyllid	rep3
+2CT	2CT_sub_HTseq.counts	control	rep1
+4CT	4CT_sub_HTseq.counts	control	rep2
+12CT	12CT_sub_HTseq.counts	control	rep3
