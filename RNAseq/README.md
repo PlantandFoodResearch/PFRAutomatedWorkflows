@@ -187,7 +187,7 @@ This pipeline allow to run a general differential analysis and give you a first 
 ## Database
 This pipeline edit a database (see below) that allow every people on Plant and Food to check and retrieve information about each genes and the number of counts for each sample in easy way by using database management. This database contains 6 columns: ID, Experiment’s ID, ID of sample, name of gene, number of counts and species. 
 
-The original address of this database is: cfphxd_rnaseq_counts
+The original address of this database is: *cfphxd_rnaseq_counts*. To access to the database you need the username: *cfphxd_rnaseq*. Password: *yIPGRMPrDjtgUTeu*. 
 The name of the table is “databaseT”.
  
 If you want to change this you need to create another table. You need to make a connection with dbaas, in the shell, write this kind of command (replace the name of user, password and name of the database):
