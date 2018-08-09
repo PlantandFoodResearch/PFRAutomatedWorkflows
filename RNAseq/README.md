@@ -65,6 +65,7 @@ This pipeline was developed based on Nextflow language, inspired on RNA-Seq Anal
 - [Installation](#installation)
 - [Configuration](#configuration-file)
 - [Conditions file](#conditions-file)
+- [OutPut files](#Output-files)
 - [Database](#database)
 - [Error/Crash](#error-job-killed-crash)
 
@@ -187,7 +188,34 @@ BlockingFactor="--batch NULL”
 ```
 This pipeline allow to run a general differential analysis and give you a first global approach of statistics analysis. If you want more specific analysis you probably need to make theses analysis by yourself for the moment. 
 
-## Database
+
+## Output files
+
+The output files of the analysis are distributed in 7 repositories, in your directory (same environment than the nextflow script) by default, but you could change the name and the location of theses repositories in the *nextflow.config* file at the end of the **standard profile**. Defaults name for these 7 directories are:
+
+### 010.QualityControlR
+
+This directory contains, among others, all the Quality Report files, in zip and html format, for each steps. 
+
+First quality control output files, to check the quality of the reads after the sequencing, have this structure:  
+17HGL_C9HBWANXX_AGTCAA_R1_fastqc.html             
+17HGL_C9HBWANXX_AGTCAA_R1_fastqc.zip  
+
+I.e: Pair-ID_R{1,2}_ fastqc.{hmtl,zip}
+
+Second quality control output files, to check the quality of the reads after the first trimming by SortmeRNA (remove contaminated bases), have this structure:
+ 17HGL_C9HBWANXX_AGTCAAf_R1_fastqc.html             
+ 17HGL_C9HBWANXX_AGTCAAf_R1_fastqc.zip 
+ 
+I.e: Pair-ID**f**_ R{1,2}_ fastqc.{hmtl,zip}
+
+Third quality control output files, to check the quality of the reads after the first trimming by SortmeRNA (remove contaminated bases), have this structure:
+ 17HGL_C9HBWANXX_AGTCAA.trimmomatic_1P_fastqc.html  
+ 17HGL_C9HBWANXX_AGTCAA.trimmomatic_1P_fastqc.zip 
+ 
+ I.e:  Pair-ID.trimmomatic_{1,2}P_fastqc.{html,zip}
+
+### Database
 This pipeline edit a database (see below) that allow every people on Plant and Food to check and retrieve information about each genes and the number of counts for each sample in easy way by using database management. This database contains 6 columns: ID, Experiment’s ID, ID of sample, name of gene, number of counts and species. 
 
 ![image](https://user-images.githubusercontent.com/39930402/43873801-50e9c976-9bdc-11e8-991e-3e1f4b41ce89.png)
