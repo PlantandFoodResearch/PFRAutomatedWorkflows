@@ -16,6 +16,7 @@ This pipeline was developed based on Nextflow language, inspired on RNA-Seq Anal
 
 
 
+![image](https://user-images.githubusercontent.com/39930402/43873893-be9e1634-9bdc-11e8-87c0-0e8974690c18.png)
 
 
 
@@ -25,7 +26,8 @@ This pipeline was developed based on Nextflow language, inspired on RNA-Seq Anal
 
 
 
-  
+  ![flowchart](https://user-images.githubusercontent.com/39930402/43873830-75fb91f4-9bdc-11e8-9ce9-f78635de5911.png)
+
 
 
 
@@ -186,6 +188,8 @@ This pipeline allow to run a general differential analysis and give you a first 
 
 ## Database
 This pipeline edit a database (see below) that allow every people on Plant and Food to check and retrieve information about each genes and the number of counts for each sample in easy way by using database management. This database contains 6 columns: ID, Experiment’s ID, ID of sample, name of gene, number of counts and species. 
+
+![image](https://user-images.githubusercontent.com/39930402/43873801-50e9c976-9bdc-11e8-991e-3e1f4b41ce89.png)
 
 The original address of this database is: *cfphxd_rnaseq_counts*. To access to the database you need the username: *cfphxd_rnaseq*. Password: *yIPGRMPrDjtgUTeu*. 
 The name of the table is “databaseT”.
