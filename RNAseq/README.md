@@ -80,7 +80,7 @@ There are some necessary data that pipeline need to know. Please check that you 
 
 ## Installation
 This pipeline is implemented with Nextflow language, so it requires Nextflow to be installed. Inside the pipeline the use of different language and tools requires Bash, Python, R, SQL to be installed. 
-Clone “main.nf”, “nextflow.config” and the “Scripts” directory in the same environment than Nextflow. (Command `git clone https://...`)
+Clone *main.nf*, *nextflow.config* and the *Scripts* directory in the same environment than Nextflow. (Command `git clone https://...`)
 
 ## Configuration file 
 
@@ -115,9 +115,10 @@ For example:
 
 `./nextflow run main.nf -profile standard,IndexE,sampleN,EdgeR `
 
-Be careful to always inform each profiles. 
+This command run the pipeline with the profile standard, IndexE, sampleN and EdgeR :
+Be careful to always inform at least one of each profiles, that is to say IndexN if you don't want IndeE, sample if you don't want sampleN.... 
 
-**Standard profile:** contains all the basic parameter like the location of the Fastq files, conditions file, species, the options of each tools (trimmomatic, STAR…), the output directory....
+**Standard profile:** contains all the basic parameter like the location of the Fastq files, conditions file, species, the options of each tools (trimmomatic, STAR…), the output directory.... You always need to inform this profile in the command line!
 
 **IndexN profile:**  if you have not the index of the reference genome for these data you need to build it, so you need to use the IndexN profile.
 
