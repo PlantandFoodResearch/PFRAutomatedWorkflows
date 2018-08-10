@@ -65,8 +65,7 @@ This pipeline was developed based on Nextflow language, inspired on RNA-Seq Anal
 - [Installation](#installation)
 - [Configuration](#configuration-file)
 - [Conditions file](#conditions-file)
-- [OutPut files](#Output-files)
-- [Database](#database)
+- [Output files](#output-files)
 - [Error/Crash](#error-job-killed-crash)
 
 ## Mandatory input files
@@ -195,27 +194,80 @@ The output files of the analysis are distributed in 7 repositories, in your dire
 
 ### 010.QualityControlR
 
-This directory contains, among others, all the Quality Report files, in zip and html format, for each steps. 
+This directory contains, among others, all the **Quality Report files**, in zip and html format, for each steps. 
 
 First quality control output files, to check the quality of the reads after the sequencing, have this structure:  
-17HGL_C9HBWANXX_AGTCAA_R1_fastqc.html             
-17HGL_C9HBWANXX_AGTCAA_R1_fastqc.zip  
+`17HGL_C9HBWANXX_AGTCAA_R1_fastqc.html             
+17HGL_C9HBWANXX_AGTCAA_R1_fastqc.zip`  
 
-I.e: Pair-ID_R{1,2}_ fastqc.{hmtl,zip}
+`I.e: Pair-ID_R{1,2}_ fastqc.{hmtl,zip}`
 
 Second quality control output files, to check the quality of the reads after the first trimming by SortmeRNA (remove contaminated bases), have this structure:
- 17HGL_C9HBWANXX_AGTCAAf_R1_fastqc.html             
- 17HGL_C9HBWANXX_AGTCAAf_R1_fastqc.zip 
+ `17HGL_C9HBWANXX_AGTCAAf_R1_fastqc.html             
+ 17HGL_C9HBWANXX_AGTCAAf_R1_fastqc.zip` 
  
-I.e: Pair-ID**f**_ R{1,2}_ fastqc.{hmtl,zip}
+`I.e: Pair-ID**f**_ R{1,2}_ fastqc.{hmtl,zip}`
 
-Third quality control output files, to check the quality of the reads after the first trimming by SortmeRNA (remove contaminated bases), have this structure:
- 17HGL_C9HBWANXX_AGTCAA.trimmomatic_1P_fastqc.html  
- 17HGL_C9HBWANXX_AGTCAA.trimmomatic_1P_fastqc.zip 
+Third quality control output files, to check the quality of the reads after the first trimming by Trimmomatic (remove adapters, per base quality), have this structure:
+ `17HGL_C9HBWANXX_AGTCAA.trimmomatic_1P_fastqc.html  
+ 17HGL_C9HBWANXX_AGTCAA.trimmomatic_1P_fastqc.zip` 
  
- I.e:  Pair-ID.trimmomatic_{1,2}P_fastqc.{html,zip}
+`I.e:  Pair-ID.trimmomatic_{1,2}P_fastqc.{html,zip}`
+
+### 020.TrimmingData
+
+This directory contains all the output files of trimmomatic step, so you could find for each sample and each reads their **cleaned files** and files which contains the **removed bases/sequences** (adapters...).
+
+The cleaned files have this structure:
+`1CPT_C9HBWANXX_CGATGT.trimmomatic_1**P**.fq.gz`
+
+`I.e:  Pair-ID.trimmomatic_{1,2}**P**.fq.gz`   
+
+The removed bases/sequences for each read files are stored in the files with that kind of structure:
+`1CPT_C9HBWANXX_CGATGT.trimmomatic_1**U**.fq.gz`
+
+`I.e:  Pair-ID.trimmomatic_{1,2}**U**.fq.gz`
+
+### 030.BamFiles
+
+This directory contains all the output files of the alignment step, you could find a directory for each sample which contains all the output files like **Aligned Bam files**, Log.final.out (give a **report** about the alignment like deletion rate for example), a ReadsPerGene tab (unmapped and mapped reads) and a lot of other **information**.
+
+Structure of the directory for each sample:
+`BAMD.1CPT_C9HBWANXX_CGATGT/`
+
+`I.e: BAMD.Pair-ID/`
+
+*Example of Log.final.out:*
+
+![image](https://user-images.githubusercontent.com/39930402/43934159-eee72f0e-9ca1-11e8-89cd-5b5038635f71.png)
+
+
+### 040.Statistics
+
+This directory contains all the output files of **statistics about alignment steps**. You could find a lot of informations about statistics about alignment steps for each sample in these kind of files:  `1CPT_C9HBWANXX_CGATGT.stats` 
+You also have directories with a lot of figures for gc content, insert size, acgt-cycles....  in these kind of structure: `statisticsG.1CPT_C9HBWANXX_CGATGT/`  
+
+*Example of html report:*
+![image](https://user-images.githubusercontent.com/39930402/43934215-4a01f9f0-9ca2-11e8-956b-b66c7ffdbb29.png)
+
+### 050.Index
+
+This directory contains all the informations about the reference genome, like **annotation** file and **index**. Whatever that the index need to be build or not all the files are redirected in this directory, so you could reuse them with other analysis if you want and avoid to spend time to build the index the next time.
+
+### 060.Counts
+
+This directory contains all the output files of HTSeq counts, so for each sample, a file with two columns containing the **counts** for each **gene**. 
+Structure: `1CPT_C9HBWANXX_CGATGT_HTseq.counts`
+
+But you could also find a table which contains the counts for each gene for all the samples.
+Structure: `merged_counts.txt`
+
+### 070.DifferentialExpression
+
+This directory contains all the output files of the **Differential Expression analysis**. It contains a summary file with all informations about the parameters, files, normalization factors, number of features discarded... used during the analysis, to check if everything is correct. You could also find a figures directory with all the **graphics** about statistics analysis (MAPlot, PCA, volcanoPlot...) and tables directory with all the **tables**. 
 
 ### Database
+
 This pipeline edit a database (see below) that allow every people on Plant and Food to check and retrieve information about each genes and the number of counts for each sample in easy way by using database management. This database contains 6 columns: ID, Experiment’s ID, ID of sample, name of gene, number of counts and species. 
 
 ![image](https://user-images.githubusercontent.com/39930402/43873801-50e9c976-9bdc-11e8-991e-3e1f4b41ce89.png)
