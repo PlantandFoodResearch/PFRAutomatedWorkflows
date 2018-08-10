@@ -79,8 +79,14 @@ There are some necessary data that pipeline need to know. Please check that you 
 -	Genome contamination index, database (they are already provided in the default configuration file but you could change if you want)
 
 ## Installation
-This pipeline is implemented with Nextflow language, so it requires Nextflow to be installed. Inside the pipeline the use of different language and tools requires Bash, Python, R, SQL to be installed. 
-Clone *main.nf*, *nextflow.config* and the *Scripts* directory in the same environment than Nextflow. (Command `git clone https://...`)
+
+This pipeline is implemented with Nextflow language (https://www.nextflow.io/), so it requires Nextflow to be installed (some documentation: https://www.nextflow.io/docs/latest/index.html). Inside the pipeline the use of different language and tools requires Bash, Python, R, SQL to be installed.
+
+First of all you need to open a session with putty.exe, and go on your workspace or on a directory where you want to run this pipeline. Write this command directly on the shell: `wget -qO- https://get.nextflow.io | bash` . It will install nextflow in the current directory.
+
+To run this pipeline you need to load all the necessary files from GtHub. You need to clone *main.nf*, *nextflow.config* and the *Scripts* directory in the same environment/directory than where you install Nextflow. To clone these files, write this command directly on the shell: `git clone https://github.com/PlantandFoodResearch/PFRAutomatedWorkflows/tree/master/RNAseq` .
+
+Before run this pipeline you need to read the next parts.
 
 ## Configuration file 
 
@@ -111,7 +117,7 @@ See below an overview of the configuration file. All the lines after "=" sign sh
 
 ### Profiles
 It contains different profiles which are all explains in the file and give you choice to use an already existing Index, sample of your data, DESeq and/or EdgeR. To run this pipeline you need to inform profiles in a cumulative way. 
-For example: 
+For example, here the command to run the pipeline: 
 
 `./nextflow run main.nf -profile standard,IndexE,sampleN,EdgeR `
 
