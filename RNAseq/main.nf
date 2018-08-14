@@ -1,55 +1,16 @@
 
 /*
- * Copyright (c) 2013-2018, Centre for Genomic Regulation (CRG) and the authors.
- *
- *   This file is part of 'RNA-Toy'.
- *
- *   RNA-Toy is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
- *   (at your option) any later version.
- *
- *   RNA-Toy is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with RNA-Toy.  If not, see <http://www.gnu.org/licenses/>.
+ *   RNA -seq Pipeline 
  */
- 
-/* 
- * Proof of concept Nextflow based RNA-Seq pipeline
- * 
- * Authors:
- * Paolo Di Tommaso <paolo.ditommaso@gmail.com>
- * Emilio Palumbo <emiliopalumbo@gmail.com> 
- */ 
 
- 
-/*
- * Defines some parameters in order to specify the refence genomes
- * and read pairs by using the command line options
- */
 
 
 /* REQUIREMENTS */
 /* To run this  pipeline you need: Fastq files Paired-end Reads, reference genome in fasta format, annotation in gff format, a database contamination genome in fasta format and their index in db format. You need to define an output directory in which you will find all the output data (params.outdir), you need to know the structure of the name of the fastq files like ID_sub_R1.fastq or ID.R1.fq or ID.F1.fastq. You need to copy the sh script in your environment, it will be useful for the test of quality */
 
-/*Defines the path for the reads file */
- /* Defines the path for the annotation file */
-  /* Defines the part for the reference genome file (fasta format) */
-params.outdir = 'results52'   /* Defines an output directory where you will be able to see the output files/data of this pipeline */
- /* In this directory you will able to see all the Quality Control Report for all the steps */
-/* You could get back all the trimming data in this directory */
- /* Get back all the bam files comes from the Alignment Step */
- /*Get back all the statistics about the bams files and  differential workflow expression*/
- /*Get back the directory of the index genome if it doesn't already exist*/
- /* Get back all the counts files */
 
-/* If genome index directory already exist please inform the path to acceed it and put 0 in the" skip" variable (1 else). Uncommented the next lines */
-  
-/* If you want to run this pipeline on sample of your data to save some time please put '1' on the variable 'A' and uncommented the subd1 and subd2 variables below and comments the other ones */
+params.outdir = 'results54'   /* Defines an output directory where you will be able to see the output files/data of this pipeline */
+ 
 
 
 if(params.A=='0'){
@@ -62,8 +23,7 @@ else {
 
 Channel.fromFilePairs(params.reads).ifEmpty { error "Cannot find any reads matching: ${params.reads}" }.set{ReadChannel}
 
- /*Defines the structure of the name of fastq file: for example DA8_sub_R1.fastq, write '_R1.fastq', if it is DQ8_R1.fq, write '_R1.fq'. So write without the ID */
-
+ 
 
 /*
  * the reference genome file
@@ -71,11 +31,6 @@ Channel.fromFilePairs(params.reads).ifEmpty { error "Cannot find any reads match
 genome_file = file(params.genome)
 annotation_file = file(params.annot)
 
-/*The reference genome file for contamination*/
-/* It will be needed/needing for sort the reads and remove the contaminated reads */
-
-
-/* Put the pathway of each database contaminatiom genome (fasta fornat) with their index (db format): if no index, you need to create them with the SortMeRNA command */
 
 
 /* process check allow to check if the conditions file is well formated. As it's the most sensitive and risky part of the pipeline and subject to human mistake, it's more useful to check at the beginning of the pipeline rather than return an error at the end of all the pipeline. */
@@ -86,7 +41,7 @@ process check {
 	conda "/workspace/appscratch/miniconda/cfpcxs_sartools"
 	
 """
-${params.scriptCheck} --targetFile ${params.conditionsfile} ${params.factorOfInterest} ${params.ReferenceCondition}  
+${params.scriptCheck} --targetFile ${params.conditionsfile} ${params.factorOfInterest} ${params.ReferenceCondition} ${params.BlockingFactor} 
 """
 
 }
@@ -99,7 +54,7 @@ ${params.scriptCheck} --targetFile ${params.conditionsfile} ${params.factorOfInt
 
 process sample {
        module "seqtk"
-       publishDir params.outdir
+       publishDir params.outdir, mode:'copy', overwrite:'true'
        
 
         input:
@@ -121,6 +76,7 @@ seqtk sample -s100 ${pair_id}${params.namefastqfileR2} ${params.size} > ${pair_i
 
 process qualitycontrol {   /* Copy the return data in the output directory: allow to see the data files  */
 	label 'QC' 
+	publishDir params.outdir1, mode: 'copy', overwrite:'true'
 
         input:
         set pair_id, file(reads) from Sample.mix(ReadChannelC) /*Sample contains small samples of the reads data: the pair_id is an ID in common for each forward and reverse read, for example if you have Kiwitestdata1.R1.fq, Kiwitestdata1.R2.fq, the pair_id will be "Kiwitestdata1", file(reads) just take the corresponding reads of the Sample channel */
@@ -167,7 +123,8 @@ bash ${params.scriptTQC} ${pair_id}.R2_fastqc.zip ${pair_id}.R2_fastqc
 /* Test command SortMeRNA: it allows to remove the contaminated reads. We need to merge the reads before using the SortMeRNA filter, with the bash script "merge-paired-reads" we obtain merged/interleaved fastq files. With these files we make the SortMeRNA and getabck only the data which are not contaminated. We need to unmerge the data with the script "unmerge-paired-reads" to obtain fastq files unmerged in the aim to use them in next steps*/
 
 process SortMeRNA {
-	publishDir params.outdir, mode: 'copy'
+	publishDir params.outdir, mode: 'copy', overwrite:'true'
+
 	module "sortmerna/2.1"
 	
 
@@ -198,6 +155,8 @@ bash unmerge-paired-reads.sh ${pair_id}_filtered.fastq ${pair_id}f_R1.fq ${pair_
 
 process QualityCFiltered {
         label 'QC'
+	publishDir params.outdir1, mode: 'copy', overwrite:'true'
+
 
         input:
         set pair_id, file(freads) from FQFiltered
@@ -239,7 +198,8 @@ bash ${params.scriptTQC} ${pair_id}f_R2_fastqc.zip ${pair_id}f_R2_fastqc
 process Trimmomatic {
         module "java"
         module "Trimmomatic-0.36"
-        publishDir params.outdir2, mode: 'copy'
+        publishDir params.outdir2, mode: 'copy', overwrite:'true'
+
 	
 
         input:
@@ -250,7 +210,7 @@ process Trimmomatic {
         set pair_id, file('*trimmomatic_*U.fq.gz') into TrimmomaticUnpaired /*  We get back the data which are not correctly trimmed: at least one of the paired-reads (forward or reverse) or the two have be removed by the trimming, ine the TrimmomaticUnPaired channel */
 
 """
-java -jar /software/bioinformatics/Trimmomatic-0.36/trimmomatic.jar PE ${pair_id}f_R1.fq  ${pair_id}f_R2.fq -baseout ${pair_id}.trimmomatic.fq.gz ILLUMINACLIP:"/software/bioinformatics/Trimmomatic-0.36/adapters/TruSeq2-PE.fa"${params.Pclip} SLIDINGWINDOW${params.SlidWindow} MINLEN${params.MinL}
+java -jar /software/bioinformatics/Trimmomatic-0.36/trimmomatic.jar PE ${pair_id}f_R1.fq  ${pair_id}f_R2.fq -baseout ${pair_id}.trimmomatic.fq.gz ILLUMINACLIP:${params.Adapterfile}${params.Pclip} SLIDINGWINDOW${params.SlidWindow} MINLEN${params.MinL}
 """
 /* We need to indicate if it's pair-ended reads with "PE", just after that we put the reads data, in the -baseout it will return the ouput file for each pair ended read so the Paired and UnPaired Trimmomatic for forward and reverse reads so 2 file for Paired (R1Paired, R2Paired) and 2 files for UnPaired (R1UnPaired, R2UnPaired) */
 /* Illuminaclip: find and remove Illumina adapters which could contaminated the reads data during the sequencing step: it's need a fasta file containing illumina adapters (here we inquire the pathway of this file), the "30" is for clipping when the score is lower than 30 */
@@ -266,6 +226,8 @@ java -jar /software/bioinformatics/Trimmomatic-0.36/trimmomatic.jar PE ${pair_id
 
 process QualityCTrimmed {
         label 'QC'
+	publishDir params.outdir1, mode: 'copy', overwrite:'true'
+
 
         input:
         set pair_id, file(treads) from TrimmomaticPaired
@@ -316,7 +278,8 @@ bash ${params.scriptTQC} ${pair_id}.trimmomatic_2P_fastqc.zip ${pair_id}.trimmom
 process Index {
     
     module "STAR/2.5.3a"
-    publishDir params.outdir5, mode: 'copy'
+    publishDir params.outdir5, mode: 'copy', overwrite:'true'
+
 
     input:
     file(genome) from genome_file   /* Input files: we need the reference genome in fasta format and the annotation file */
@@ -348,7 +311,8 @@ ln -s ${params.index} indexDirB
 process alignment {
     module "STAR/2.5.3a"
     module "picard-tools"
-    publishDir params.outdir3, mode: 'copy'
+    publishDir params.outdir3, mode: 'copy', overwrite:'true'
+
 
     input:
 
@@ -369,7 +333,8 @@ STAR --genomeDir ${index1} --outFileNamePrefix BAMD.${pair_id}/${pair_id}_ --rea
 
 process plotStat {
 	module "samtools"
-	publishDir params.outdir4, mode: 'copy'
+	publishDir params.outdir4, mode: 'copy', overwrite:'true'
+
 
 	input:
 	set pair_id, file(bamf) from bam
@@ -397,10 +362,11 @@ plot-bamstats ${pair_id}.stats -p statisticsG.${pair_id}/${pair_id}
 /* The next steps allow to see if there are differential expression between the expressed genes with some statistics */
 
 /* HTSeq Count: get counts for differential expression and database creation */
-/* Return HTseqcounts files, rmove the last five lines of the HTSeqcounts (only for insert data, the output Counts files are full) and insert data of this alignment in a database: use the counts, gene, pair_id of the HTseq files, the species need to be inform by user. The loop while use these data in paramater of the bash script "testSQL3 which make SQL command ot insert data in a database. The database need to be provided / created by user as well as the user name, code, servor  and database name. */
+/* Return HTseqcounts files, remove the last five lines of the HTSeqcounts (only for insert data, the output Counts files are full) and insert data of this alignment in a database: use the counts, gene, pair_id of the HTseq files, the species need to be inform by user. The loop while use these data in paramater of the bash script "testSQL3 which make SQL command ot insert data in a database. The database need to be provided / created by user as well as the user name, code, servor  and database name. */
 
 process DiffCount {
-	publishDir params.outdir6, mode: 'copy'
+	publishDir params.outdir6, mode: 'copy', overwrite:'true'
+
 	module "HTSeq/0.7.2"
 	module "mysql.connector"
 
@@ -415,7 +381,7 @@ process DiffCount {
 """
 htseq-count -f bam -r pos -s no -i Parent ${bamf}/${pair_id}_Aligned.out.bam ${annot} > ${pair_id}_HTseq.counts
 head -n -5 ${pair_id}_HTseq.counts > ${pair_id}_HTseq.C.counts
-while read LINE; do bash ${params.scriptSQL} \$LINE ${params.species} ${pair_id}i >> buffer.sql; done < ${pair_id}_HTseq.C.counts
+while read LINE; do bash ${params.scriptSQL} \$LINE ${params.species} ${pair_id} ${params.IDexp} >> buffer.sql; done < ${pair_id}_HTseq.C.counts
 mysql -hdatabase.powerplant.pfr.co.nz -p${params.passwordDB} -u${params.userDB} -D${params.nameDB} < buffer.sql 
 
 """
@@ -427,7 +393,8 @@ mysql -hdatabase.powerplant.pfr.co.nz -p${params.passwordDB} -u${params.userDB} 
 
 process TableCounts {
 	
-	publishDir params.outdir6, mode: 'copy'
+	publishDir params.outdir6, mode: 'copy', overwrite:'true'
+
 
 	input:
 	file(CountsCF) from CountsCDiff.collect() 
@@ -446,7 +413,8 @@ python ${params.scriptTabC}
 
 process StatDE {
         conda "/workspace/appscratch/miniconda/cfpcxs_sartools"
-        publishDir params.outdir7, mode:'copy'
+        publishDir params.outdir7, mode:'copy', overwrite:'true'
+
 
 	input:
 	file(HTSeq) from CountsDiff.collect()
@@ -461,22 +429,24 @@ script:
 
 if(params.DESeq=='1' & params.EdgeR=='1')
 """
-${params.scriptDESeq} --targetFile ${params.conditionsfile} --rawDir . ${params.featuresToRemove} ${params.factorOfInterest} ${params.ReferenceCondition} > DESeq_Output
-${params.scriptEdgeR} --targetFile ${params.conditionsfile} --rawDir . ${params.featuresToRemove} ${params.factorOfInterest} ${params.ReferenceCondition} > EdgeR_Output
+${params.scriptDESeq} --targetFile ${params.conditionsfile} --rawDir . ${params.featuresToRemove} ${params.factorOfInterest} ${params.ReferenceCondition} ${params.BlockingFactor} > DESeq_Output
+${params.scriptEdgeR} --targetFile ${params.conditionsfile} --rawDir . ${params.featuresToRemove} ${params.factorOfInterest} ${params.ReferenceCondition} ${params.BlockingFactor} > EdgeR_Output
 """
 
 else if(params.EdgeR=='1')
 """
-${params.scriptEdgeR} --targetFile ${params.conditionsfile} --rawDir . ${params.featuresToRemove} ${params.factorOfInterest} ${params.ReferenceCondition} > EdgeR_Output
+${params.scriptEdgeR} --targetFile ${params.conditionsfile} --rawDir . ${params.featuresToRemove} ${params.factorOfInterest} ${params.ReferenceCondition} ${params.BlockingFactor} > EdgeR_Output
 """
 
 else if(params.DESeq=='1')
 """
-${params.scriptDESeq} --targetFile ${params.conditionsfile} --rawDir . ${params.featuresToRemove} ${params.factorOfInterest} ${params.ReferenceCondition} > DESeq_Output
+${params.scriptDESeq} --targetFile ${params.conditionsfile} --rawDir . ${params.featuresToRemove} ${params.factorOfInterest} ${params.ReferenceCondition} ${params.BlockingFactor} > DESeq_Output
 """
 
 
 }
+
+
 
 /*Notification message: send an e-mail when the worklow execution is completed or an report error if the pipeline has been stopped. */
 
