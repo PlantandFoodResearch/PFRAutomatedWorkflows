@@ -295,7 +295,7 @@ Once the connection to dbaas is working you could write this kind of command in 
 
  If the pipeline has crashed because of a lack of memory or too busy servor, you could use the **resume option**, this option allow to start at the steps where the pipeline crashed and save the steps/processes already run by the pipeline before. So it’s avoid to lose time to rerun all the previous steps. You could use this option like that: 
  
-`./nextflow run -resume main.nf profiles standard,IndexE,sampleN,EdgeR`
+`./nextflow run -resume main.nf profile standard,IndexE,sampleN,EdgeR`
 
 ### Error:
 
